@@ -34,4 +34,4 @@ Now, `clean_data/labels.csv` contains all the mushrooms and the mushroom identif
 
 ## Acknowledgements
 
-Data generously provided by the [Western Pennsylvania Mushroom Club](https://wpamushroomclub.org/) via collaboration with Scott Pavelle.
+Data generously provided by the [Western Pennsylvania Mushroom Club](https://wpamushroomclub.org/) via collaboration with Scott Pavelle and Richard Jacob.
