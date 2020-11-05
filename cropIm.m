@@ -17,36 +17,33 @@ function results = cropIm(im)
 
 
 % Replace the sample below with your code----------------------------------
+limit = 512; % alexnet's input size
 
 % [w, h] is the width and height of original graph
 w = size(im, 1);
 h = size(im, 2);
-% »ñÈ¡resizeºóµÄ´óÐ¡ [maxw, maxh]
-if numel(wh) == 1
-    if w > h
-        maxw = wh;
-        maxh = wh*h/w;
-    else
-        maxh = wh;
-        maxw = wh*w/h;
-    end
-else
-    maxw = wh(1);
-    maxh = wh(2);
-    if (w-h)*(maxw-maxh) < 0
-        [maxw, maxh] = deal(h, w);
-    end
-    
-    if w/h < maxw/maxh
-        maxw = maxh*w/h;
-    else
-        maxh = maxw*h/w;
-    end
-end
-if maxw < w
-    im = imresize(im, [maxw, maxh]);
+
+if w > h % wide image
+    maxw = limit;
+    maxh = limit*h/w;
+else     % tall image
+    maxh = limit;
+    maxw = limit*w/h;
 end
 
-results.im = im;
+% shrink/expand it
+im = imresize(im, [maxw, maxh]);
+
+
+% pad it
+im = padarray(im, ...
+    [ceil((limit - maxw)/2), ...
+    ceil((limit - maxh)/2)...
+    ]);
+
+% make sure it's actually correct size
+im = imresize(im, [limit, limit]);
+
+results.im = im;  
 
 %--------------------------------------------------------------------------

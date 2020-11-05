@@ -1,1 +1,1 @@
-matlab -batch "map_features; label_mushrooms; copy_images_from_files; copy_images_from_csv;"
+matlab -batch "map_features; label_mushrooms; copy_images_from_files; copy_images_from_csv; resize_and_store_images;"
