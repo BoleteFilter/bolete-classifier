@@ -14,11 +14,7 @@ function names = parseNames(names)
         name = names(n);
         if ~strcmp(name, "")
             name = split(name, ['-']);
-            if length(name) >= 3 && name(3) == "var"
-                name = names(n);
-            else
-                name = strcat(name(1),"-" , name(2));
-            end
+            name = strcat(name(1),"-" , name(2));
         end
         newNames(n) = string(name);
     end
