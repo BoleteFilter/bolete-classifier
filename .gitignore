@@ -1,6 +1,6 @@
-raw_data
-data
-photos
-data*
+data_pipeline/raw_data
+data_pipeline/data
+data_pipeline/photos
+data_pipeline/new_photos
+data_pipeline/data*
 *.h5
-new_photos
