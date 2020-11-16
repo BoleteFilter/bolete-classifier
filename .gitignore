@@ -1,3 +1,6 @@
+__pycache__
+.ipynb_checkpoints
+.vscode
 data_pipeline/raw_data
 data_pipeline/data
 data_pipeline/photos

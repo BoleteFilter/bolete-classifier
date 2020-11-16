@@ -12,7 +12,6 @@ def load_bolete_data(base_dir=BASE_DIR, max_train=None):
     with h5py.File(bolete_file, "r") as f:
         print(f.items())
         for k, v in f.items():
-            print(k, v)
             data[k] = np.asarray(v)
 
     # # # Maybe subsample the training data
