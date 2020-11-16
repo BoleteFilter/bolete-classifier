@@ -8,9 +8,6 @@ from data_utils import BoleteDataset, get_data_from_splits
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
-# dtype = torch.cuda.FloatTensor
-
-
 def get_loader(X, Y, batch_size, shuffle=True):
     dataset = BoleteDataset(X, Y)
     loader = torch.utils.data.DataLoader(
@@ -93,7 +90,7 @@ def cross_val(
             dataloaders=dataloaders,
             loss_fn=loss_fn,
             optimizer=optimizer,
-            num_epochs=20,
-            show_every=5,
+            num_epochs=num_epochs,
+            show_every=show_every,
             device=device,
         )
