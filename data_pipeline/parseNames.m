@@ -13,8 +13,10 @@ function names = parseNames(names)
     for n = 1:length(names)
         name = names(n);
         if ~strcmp(name, "")
-            name = split(name, ['-']);
-            name = strcat(name(1),"-" , name(2));
+            name_pieces = split(name, '-');
+            if length(name_pieces) > 1
+                name = strcat(name_pieces(1),"-" , name_pieces(2));
+            end
         end
         newNames(n) = string(name);
     end

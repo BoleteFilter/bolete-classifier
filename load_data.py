@@ -24,5 +24,22 @@ def load_bolete_data(base_dir=BASE_DIR, max_train=None):
     return data
 
 
+class BoleteDataset(Dataset):
+    def __init__(self, X, y, transform=None):
+        self.X = X
+        self.y = y
+        self.transform = transform
+
+    def __len__(self):
+        return self.X.shape[0]
+
+    def __getitem__(self, index):
+        image = self.X[index]
+        label = self.y[index]
+        if self.transform:
+            image = self.transform(image)
+        return (image, label)
+
+
 if __name__ == "__main__":
     load_bolete_data()
