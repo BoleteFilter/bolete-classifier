@@ -45,7 +45,8 @@ def load_bolete_data(base_dir=BASE_DIR, max_train=None):
 
 def get_train_and_test(data, y_type):
     X, y = data["bolete-images"].T, data["bolete-labels"].T
-    sss = StratifiedShuffleSplit(n_splits=1, test_size=0.3, random_state=0)
+    X = np.transpose(X, [0, 3, 1, 2])
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=0.5, random_state=0)
     sss.get_n_splits(X, y)
     for train_index, test_index in sss.split(X, y):
         X_train, X_test, Y_train, Y_test = get_data_from_splits(
