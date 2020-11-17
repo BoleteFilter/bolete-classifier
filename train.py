@@ -80,7 +80,7 @@ def train_model(
                 train_loss_history.append(epoch_loss)
 
     model.load_state_dict(best_model_wts)
-    return model, train_loss_history, val_acc_history
+    return train_loss_history, val_acc_history
 
 
 def cross_val(
@@ -122,7 +122,7 @@ def cross_val(
 
         print("CV Fold: ", fold)
 
-        _, train_hist, val_hist = train_model(
+        train_hist, val_hist = train_model(
             model=model,
             optimizer=optimizer,
             dataloaders=dataloaders,
@@ -150,10 +150,11 @@ def evaluate(
     dtype=torch.float32,
     transform=None,
 ):
+    model.to(device, dtype=dtype)
     model.eval()
     loader = get_loader(X, Y, batch_size=1, transform=transform)
 
-    outputs = np.zeros(y.shape[0], out_dim)
+    outputs = np.zeros((y.shape[0], out_dim))
     y_pred = np.zeros_like(Y)
     y_true = np.zeros_like(Y)
 
@@ -161,14 +162,14 @@ def evaluate(
     for inputs, labels in loader:
         inputs = inputs.to(device, dtype=dtype)
         labels = labels.to(device)
-
         scores = model(inputs)
-        outputs[row, :] = scores.numpy()
 
         pred = pred_fn(scores)
-
-        y_pred[row, :] = pred.numpy()
-        y_true[row, :] = labels.numpy()
+        with torch.no_grad():
+            outputs[row, :] = scores.numpy()
+            y_pred[row, :] = pred.numpy()
+            y_true[row, :] = labels.numpy()
+        row += 1
 
     return outputs, y_pred, y_true, y
 

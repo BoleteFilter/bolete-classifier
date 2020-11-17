@@ -67,7 +67,7 @@ def get_val(X_train, Y_train, y_train):
 
 def save_raw_eval_data(scores, y_pred, y_true, y_labels, name):
     np.savetxt(
-        "evaluation_data/" + name + "_scores.csv", y_pred, delimiter=",", fmt="%d"
+        "evaluation_data/" + name + "_scores.csv", scores, delimiter=",", fmt="%f"
     )
     np.savetxt("evaluation_data/" + name + "_pred.csv", y_pred, delimiter=",", fmt="%d")
     np.savetxt("evaluation_data/" + name + "_true.csv", y_true, delimiter=",", fmt="%d")
