@@ -46,11 +46,8 @@ def train_model(
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(phase == "train"):
                     scores = model(inputs)
-
                     loss = loss_fn(scores, labels)
                     preds = pred_fn(scores)
-                    print(preds)
-
                     if phase == "train":
                         loss.backward()
                         optimizer.step()
