@@ -8,8 +8,8 @@ from data_utils import BoleteDataset, get_data_from_splits
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
-def get_loader(X, Y, batch_size, shuffle=True):
-    dataset = BoleteDataset(X, Y)
+def get_loader(X, Y, batch_size, shuffle=True, transform=None):
+    dataset = BoleteDataset(X, Y, transform)
     loader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, shuffle=shuffle
     )
@@ -17,8 +17,17 @@ def get_loader(X, Y, batch_size, shuffle=True):
 
 
 def train_model(
-    model, dataloaders, loss_fn, optimizer, num_epochs, show_every, device,
+    model,
+    optimizer,
+    dataloaders,
+    loss_fn,
+    pred_fn,
+    num_epochs,
+    show_every,
+    device,
+    dtype,
 ):
+    model.to(device, dtype=dtype)
     iter_count = 0
     val_acc_history = []
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -32,15 +41,16 @@ def train_model(
             running_loss = 0.0
             running_corrects = 0
             for inputs, labels in dataloaders[phase]:
-                inputs = inputs.to(device)
+                inputs = inputs.to(device, dtype=dtype)
                 labels = labels.to(device)
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(phase == "train"):
                     scores = model(inputs)
-                    outputs = torch.sigmoid(scores)
-                    loss = loss_fn(outputs, labels)
-                    preds = outputs > 0.5
+
+                    loss = loss_fn(scores, labels)
+                    preds = pred_fn(scores)
                     print(preds)
+
                     if phase == "train":
                         loss.backward()
                         optimizer.step()
@@ -71,10 +81,13 @@ def cross_val(
     model,
     optimizer,
     loss_fn,
+    pred_fn,
     batch_size,
     num_epochs,
     show_every,
     device=torch.device("cpu"),
+    dtype=torch.float32,
+    transform=None,
 ):
     cross_val_split = StratifiedShuffleSplit(n_splits=5, test_size=0.2, random_state=0)
     cross_val_split.get_n_splits(X_train, Y_train)
@@ -82,15 +95,17 @@ def cross_val(
         X_train_cv, X_val_cv, Y_train_cv, Y_val_cv = get_data_from_splits(
             X_train, Y_train, train_index, val_index
         )
-        train_loader = get_loader(X_train_cv, Y_train_cv, batch_size)
-        val_loader = get_loader(X_val_cv, Y_val_cv, batch_size)
+        train_loader = get_loader(X_train_cv, Y_train_cv, batch_size, transform)
+        val_loader = get_loader(X_val_cv, Y_val_cv, batch_size, transform)
         dataloaders = {"train": train_loader, "val": val_loader}
         train_model(
             model=model,
+            optimizer=optimizer,
             dataloaders=dataloaders,
             loss_fn=loss_fn,
-            optimizer=optimizer,
+            pred_fn=pred_fn,
             num_epochs=num_epochs,
             show_every=show_every,
             device=device,
+            dtype=dtype,
         )
