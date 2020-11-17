@@ -32,6 +32,7 @@ def train_model(
     dtype,
     phases=["train", "val"],
 ):
+    print("Training model on: ", device)
     model.to(device, dtype=dtype)
     iter_count = 0
     val_acc_history = []
@@ -100,6 +101,7 @@ def cross_val(
     dtype=torch.float32,
     transform=None,
 ):
+    print("CV model on: ", device)
     cross_val_split = StratifiedShuffleSplit(
         n_splits=folds, test_size=test_size, random_state=0
     )
@@ -150,13 +152,19 @@ def evaluate(
     dtype=torch.float32,
     transform=None,
 ):
+    print("Evaluating model on: ", device)
     model.to(device, dtype=dtype)
     model.eval()
     loader = get_loader(X, Y, batch_size=1, transform=transform)
 
     outputs = np.zeros((y.shape[0], out_dim))
-    y_pred = np.zeros_like(Y)
-    y_true = np.zeros_like(Y)
+
+    yshape = Y.shape
+    if len(Y.shape) < 2:
+        yshape = (Y.shape[0], 1)
+
+    y_pred = np.zeros(yshape)
+    y_true = np.zeros(yshape)
 
     row = 0
     for inputs, labels in loader:
@@ -166,9 +174,9 @@ def evaluate(
 
         pred = pred_fn(scores)
         with torch.no_grad():
-            outputs[row, :] = scores.numpy()
-            y_pred[row, :] = pred.numpy()
-            y_true[row, :] = labels.numpy()
+            outputs[row, :] = scores.cpu().numpy()
+            y_pred[row, :] = pred.cpu().numpy()
+            y_true[row, :] = labels.cpu().numpy()
         row += 1
 
     return outputs, y_pred, y_true, y
