@@ -78,19 +78,19 @@ def save_raw_eval_data(scores, y_pred, y_true, y_labels, name):
 
 
 def load_raw_eval_data(name):
-    np.loadtxt(
+    scores = np.loadtxt(
         "evaluation_data/" + name + "_scores.csv", delimiter=",", dtype=float,
     )
-    np.loadtxt(
+    y_pred = np.loadtxt(
         "evaluation_data/" + name + "_pred.csv", delimiter=",", dtype=int,
     )
-    np.loadtxt(
+    y_true = np.loadtxt(
         "evaluation_data/" + name + "_true.csv", delimiter=",", dtype=int,
     )
-    np.loadtxt(
+    y_labels = np.loadtxt(
         "evaluation_data/" + name + "_label.csv", delimiter=",", dtype=int,
     )
-    return True
+    return scores, y_pred, y_true, y_labels
 
 
 def save_performance_data(p_value, perf, name):
