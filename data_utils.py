@@ -93,22 +93,22 @@ def load_raw_eval_data(name):
     return scores, y_pred, y_true, y_labels
 
 
-def save_performance_data(p_value, perf, name):
+def save_performance_data(p_value, perf, name, edibility=False):
     assert p_value.shape == perf.shape
-    # np.zeros(len(p_value), len(perf))
+    folder = "edibility_data/" if edibility else "performance_data/"
+
     np.savetxt(
-        "evaluation_data/" + name + "_perform.csv",
-        [p_value, perf],
-        delimiter=",",
-        fmt="%f",
+        folder + name + "_perform.csv", [p_value, perf], delimiter=",", fmt="%f",
     )
     return True
 
 
-def load_performance_data(p_value, perf, name):
+def load_performance_data(p_value, perf, name, edibility=False):
     assert p_value.shape == perf.shape
+    folder = "edibility_data/" if edibility else "performance_data/"
+
     np.savetxt(
-        "evaluation_data/" + name + "_perform.csv",
+        "performance_data/" + name + "_perform.csv",
         [p_value, perf],
         delimiter=",",
         fmt="%d",

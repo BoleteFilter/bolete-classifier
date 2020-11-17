@@ -36,6 +36,8 @@ def train_model(
     model.to(device, dtype=dtype)
     iter_count = 0
     val_acc_history = []
+    val_loss_history = []
+    train_acc_history = []
     train_loss_history = []
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
@@ -54,6 +56,7 @@ def train_model(
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(phase == "train"):
                     scores = model(inputs)
+
                     loss = loss_fn(scores, labels)
                     preds = pred_fn(scores)
 
@@ -77,11 +80,13 @@ def train_model(
                 best_model_wts = copy.deepcopy(model.state_dict())
             if phase == "val":
                 val_acc_history.append(epoch_acc)
+                val_loss_history.append(epoch_loss)
             else:
+                train_acc_history.append(epoch_acc)
                 train_loss_history.append(epoch_loss)
 
     model.load_state_dict(best_model_wts)
-    return train_loss_history, val_acc_history
+    return train_acc_history, train_loss_history, val_acc_history, val_loss_history
 
 
 def cross_val(
@@ -107,7 +112,12 @@ def cross_val(
     )
     cross_val_split.get_n_splits(X_train, Y_train)
     fold = 1
-    history = {"train": [], "val": []}
+    history = {
+        "train_loss": [],
+        "val_loss": [],
+        "train_acc": [],
+        "val_acc": [],
+    }
     for train_index, val_index in cross_val_split.split(X_train, Y_train):
         (
             X_train_cv,
@@ -124,7 +134,7 @@ def cross_val(
 
         print("CV Fold: ", fold)
 
-        train_hist, val_hist = train_model(
+        train_acc, train_loss, val_acc, val_loss = train_model(
             model=model,
             optimizer=optimizer,
             dataloaders=dataloaders,
@@ -135,8 +145,10 @@ def cross_val(
             device=device,
             dtype=dtype,
         )
-        history["train"].append(train_hist)
-        history["val"].append(val_hist)
+        history["train_acc"].append(train_acc)
+        history["train_loss"].append(train_loss)
+        history["val_acc"].append(val_acc)
+        history["val_loss"].append(val_loss)
         fold += 1
     return history
 
