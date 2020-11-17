@@ -95,11 +95,12 @@ def load_raw_eval_data(name):
 
 def save_performance_data(p_value, perf, name):
     assert p_value.shape == perf.shape
+    # np.zeros(len(p_value), len(perf))
     np.savetxt(
         "evaluation_data/" + name + "_perform.csv",
         [p_value, perf],
         delimiter=",",
-        fmt="%d",
+        fmt="%f",
     )
     return True
 
