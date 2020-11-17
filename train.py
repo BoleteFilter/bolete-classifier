@@ -49,7 +49,6 @@ def train_model(
                     scores = model(inputs)
                     loss = loss_fn(scores, labels)
                     preds = pred_fn(scores)
-                    # print(preds)
 
                     if phase == "train":
                         loss.backward()
