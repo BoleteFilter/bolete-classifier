@@ -30,6 +30,7 @@ def train_model(
     model.to(device, dtype=dtype)
     iter_count = 0
     val_acc_history = []
+    train_loss_history = []
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
     for epoch in range(num_epochs):
@@ -49,7 +50,7 @@ def train_model(
 
                     loss = loss_fn(scores, labels)
                     preds = pred_fn(scores)
-                    print(preds)
+                    # print(preds)
 
                     if phase == "train":
                         loss.backward()
@@ -71,8 +72,11 @@ def train_model(
                 best_model_wts = copy.deepcopy(model.state_dict())
             if phase == "val":
                 val_acc_history.append(epoch_acc)
+            else:
+                train_loss_history.append(epoch_loss)
+
     model.load_state_dict(best_model_wts)
-    return model, val_acc_history
+    return model, train_loss_history, val_acc_history
 
 
 def cross_val(
@@ -85,12 +89,18 @@ def cross_val(
     batch_size,
     num_epochs,
     show_every,
+    folds=5,
+    test_size=0.2,
     device=torch.device("cpu"),
     dtype=torch.float32,
     transform=None,
 ):
-    cross_val_split = StratifiedShuffleSplit(n_splits=5, test_size=0.2, random_state=0)
+    cross_val_split = StratifiedShuffleSplit(
+        n_splits=folds, test_size=test_size, random_state=0
+    )
     cross_val_split.get_n_splits(X_train, Y_train)
+    fold = 1
+    history = {"train": [], "val": []}
     for train_index, val_index in cross_val_split.split(X_train, Y_train):
         X_train_cv, X_val_cv, Y_train_cv, Y_val_cv = get_data_from_splits(
             X_train, Y_train, train_index, val_index
@@ -98,7 +108,8 @@ def cross_val(
         train_loader = get_loader(X_train_cv, Y_train_cv, batch_size, transform)
         val_loader = get_loader(X_val_cv, Y_val_cv, batch_size, transform)
         dataloaders = {"train": train_loader, "val": val_loader}
-        train_model(
+        print("CV Fold: ", fold)
+        _, train_hist, val_hist = train_model(
             model=model,
             optimizer=optimizer,
             dataloaders=dataloaders,
@@ -109,3 +120,8 @@ def cross_val(
             device=device,
             dtype=dtype,
         )
+        history["train"].append(train_hist)
+        history["val"].append(val_hist)
+        fold += 1
+    return history
+
