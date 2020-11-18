@@ -5,6 +5,9 @@ import os, json
 import numpy as np
 import h5py
 
+import pandas as pd
+
+
 BASE_DIR = "data_pipeline"
 
 
@@ -25,9 +28,9 @@ class BoleteDataset(Dataset):
         return (image, label)
 
 
-def load_bolete_data(base_dir=BASE_DIR, max_train=None):
+def load_bolete_data(fname="bolete.h5", base_dir=BASE_DIR, max_train=None):
     data = {}
-    bolete_file = os.path.join(base_dir, "bolete.h5")
+    bolete_file = os.path.join(base_dir, fname)
     with h5py.File(bolete_file, "r") as f:
         print(f.items())
         for k, v in f.items():
@@ -95,7 +98,7 @@ def load_raw_eval_data(name):
 
 def save_performance_data(p_value, perf, name, edibility=False):
     assert p_value.shape == perf.shape
-    folder = "edibility_data/" if edibility else "performance_data/"
+    folder = "performance_data/"
 
     np.savetxt(
         folder + name + "_perform.csv", [p_value, perf], delimiter=",", fmt="%f",
@@ -105,12 +108,20 @@ def save_performance_data(p_value, perf, name, edibility=False):
 
 def load_performance_data(p_value, perf, name, edibility=False):
     assert p_value.shape == perf.shape
-    folder = "edibility_data/" if edibility else "performance_data/"
+    folder = "performance_data/"
 
     np.savetxt(
-        "performance_data/" + name + "_perform.csv",
-        [p_value, perf],
-        delimiter=",",
-        fmt="%d",
+        folder + name + "_perform.csv", [p_value, perf], delimiter=",", fmt="%d",
     )
+    return True
+
+
+def save_history_data(history, name, edibility=False):
+    folder = "history_data_ed/" if edibility else "history_data/"
+    for key in history.keys():
+        history[key] = np.mean(history[key], axis=0)
+
+    df = pd.DataFrame(history)
+    df.to_csv(folder + name + "_history.csv")
+
     return True

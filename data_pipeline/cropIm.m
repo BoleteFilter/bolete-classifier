@@ -17,7 +17,7 @@ function results = cropIm(im)
 
 
 % Replace the sample below with your code----------------------------------
-limit = 512; % alexnet's input size
+limit = 256; %512;
 
 % [w, h] is the width and height of original graph
 w = size(im, 1);

@@ -57,14 +57,18 @@ def train_model(
                 with torch.set_grad_enabled(phase == "train"):
                     scores = model(inputs)
 
+                    # labels = labels.type_as(scores)
+
                     loss = loss_fn(scores, labels)
                     preds = pred_fn(scores)
 
                     if phase == "train":
                         loss.backward()
                         optimizer.step()
+
                 running_loss += loss.item() * inputs.size(0)
                 running_corrects += torch.sum(preds == labels.data)
+
             epoch_loss = running_loss / len(dataloaders[phase].dataset)
             epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
 
@@ -79,11 +83,11 @@ def train_model(
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
             if phase == "val":
-                val_acc_history.append(epoch_acc)
-                val_loss_history.append(epoch_loss)
+                val_acc_history.append(float(epoch_acc))
+                val_loss_history.append(float(epoch_loss))
             else:
-                train_acc_history.append(epoch_acc)
-                train_loss_history.append(epoch_loss)
+                train_acc_history.append(float(epoch_acc))
+                train_loss_history.append(float(epoch_loss))
 
     model.load_state_dict(best_model_wts)
     return train_acc_history, train_loss_history, val_acc_history, val_loss_history
@@ -118,6 +122,7 @@ def cross_val(
         "train_acc": [],
         "val_acc": [],
     }
+    model_wts = copy.deepcopy(model.state_dict())
     for train_index, val_index in cross_val_split.split(X_train, Y_train):
         (
             X_train_cv,
@@ -134,6 +139,7 @@ def cross_val(
 
         print("CV Fold: ", fold)
 
+        model.load_state_dict(model_wts)
         train_acc, train_loss, val_acc, val_loss = train_model(
             model=model,
             optimizer=optimizer,

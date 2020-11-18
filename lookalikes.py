@@ -40,8 +40,7 @@ def get_edibility(species_id):
 
 
 def similarity(a, b):
-    # return np.sum(a * b)
-    return np.tensordot(a, b)
+    return np.sum(a * b)
 
 
 ## Vectorized Version ##
