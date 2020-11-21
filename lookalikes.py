@@ -17,6 +17,10 @@ feats = [col for col in labels if col.startswith("F")][:-5]
 edibility = [col for col in labels if col.startswith("F")][-5:]
 
 
+def get_num_species():
+    return len(selected_ids)
+
+
 def get_old_id(new_id):
     old_id = int(ids.loc[ids["NewID"] == new_id]["OldID"].values)
     return old_id
