@@ -3,6 +3,8 @@ from lookalikes import *
 import torch
 import numpy as np
 
+def shared(tau, tau_hat):
+    return len(np.intersect1d(tau, tau_hat))
 
 def compute_and_save_performance(name):
     scores, y_pred, y_true, y_labels = load_raw_eval_data(name)
@@ -30,7 +32,8 @@ def compute_and_save_performance(name):
             else:
                 print("Unknown model type")
                 return
-
+            true_lookalikes = lookalikes(t, p)
+            tau_overlap = shared(tau_hat, true_lookalikes)/max(len(true_lookalikes), len(tau_hat))
             ps[p].append(performance(tau_hat, t))
             real_ed = get_edibility(t)
             pred_ed = np.argmax(np.bincount(tau_hat)) if len(tau_hat) > 0 else -1
