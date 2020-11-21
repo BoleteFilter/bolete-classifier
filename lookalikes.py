@@ -105,12 +105,21 @@ def print_feats(species_id):
     print()
 
 
-def get_tau_hat():
-    tau_hat = []
-    return tau_hat
-
-
 def performance(tau_hat, t):
     acc = t in tau_hat
     M = len(selected_ids)
     return ((M - len(tau_hat)) * acc) / M
+
+
+def get_performance(u, t, p):
+    tau_hat = species_from_feats(u, p)
+    return performance(tau_hat, t)
+
+
+def estimate_performance(u, p):
+    res = np.zeros((len(selected_ids),))
+    for t in range(len(selected_ids)):
+        perf = get_performance(u, t, p)
+        # print(perf)
+        res[t] = perf
+    return res
