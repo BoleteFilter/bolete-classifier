@@ -1,3 +1,4 @@
+from numpy.core.numeric import zeros_like
 import pandas as pd
 import numpy as np
 from collections import defaultdict
@@ -43,6 +44,13 @@ def get_edibility(species_id):
     return ed
 
 
+def get_tau_edibility(tau_hat):
+    ed = np.zeros_like(tau_hat)
+    for i in range(len(tau_hat)):
+        ed[i] = get_edibility(tau_hat[i])
+    return ed
+
+
 def similarity(a, b):
     return np.sum(a * b)
 
@@ -80,29 +88,44 @@ def performance(tau_hat, t):
     return ((M - len(tau_hat)) * acc) / M
 
 
-def get_performance(u, t, p):
+def edibility_performance(tau_hat, t):
+    real_ed = get_edibility(t)
+    tau_hat_ed = get_tau_edibility(tau_hat)
+    pred_ed = (  # mode predicted edibility
+        np.argmax(np.bincount(tau_hat_ed)) if len(tau_hat_ed) > 0 else -1
+    )
+    return 1 if real_ed == pred_ed else 0
+
+
+def get_performance(u, t, p, edibility=False):
     tau_hat = species_from_feats(u, p)
-    return performance(tau_hat, t)
+    if edibility:
+        edibility_performance(tau_hat, t)
+    else:
+        performance(tau_hat, t)
 
 
-def estimate_performance(u, p):
+def get_performance_direct(ids, t, p, edibility=False):
+    size_of_tau_hat = len(lookalikes(ids[0], p))
+    tau_hat = ids[:size_of_tau_hat]
+    if edibility:
+        edibility_performance(tau_hat, t)
+    else:
+        performance(tau_hat, t)
+
+
+def estimate_performance(u, p, edibility=False):
     res = np.zeros((len(selected_ids),))
     for t in range(len(selected_ids)):
-        perf = get_performance(u, t, p)
+        perf = get_performance(u, t, p, edibility)
         # print(perf)
         res[t] = perf
     return res
 
 
-def get_performance_direct(ids, t, p):
-    size_of_tau_hat = len(lookalikes(ids[0], p))
-    tau_hat = ids[:size_of_tau_hat]
-    return performance(tau_hat, t)
-
-
-def estimate_performance_direct(ids, p):
+def estimate_performance_direct(ids, p, edibility=False):
     res = np.zeros((len(selected_ids),))
     for t in range(len(selected_ids)):
-        perf = get_performance_direct(ids, t, p)
+        perf = get_performance_direct(ids, t, p, edibility)
         res[t] = perf
     return res

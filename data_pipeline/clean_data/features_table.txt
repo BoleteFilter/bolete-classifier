@@ -1,0 +1,64 @@
+
+
+\section{Edibility}
+
+\begin{table}[ht]
+\caption{Edibility classifications from dataset.}
+\centering
+\begin{tabular}{| c | c |}\hline
+id & category \\\hline
+1  &   Avoid  \\\hline
+2  &  Bitter  \\\hline
+3  &   Iffy  \\\hline
+4  &   Good  \\\hline
+5  &   Choice  \\\hline
+\end{tabular}
+\end{table}
+
+\section{Characteristics}
+
+\begin{table}[ht]
+\caption{Species characteristics enumerated.}
+\centering
+\begin{tabular}{| c | c | c |}\hline
+id  &  category & feature  \\\hline
+1  &   Cap Color    &   White, Buff, or Light Gray  \\\hline
+2  &   Cap Color    &   Yellow to Orange  \\\hline
+3  &   Cap Color    &   Red, Pink, Purple, or Orange  \\\hline
+4  &   Cap Color    &   Some Shade of Brown  \\\hline
+5  &   Cap Color    &   Black, Dark Brown, or Dark Gray  \\\hline
+6  &   Cap Texture    &   Dry/Smooth (Normal)  \\\hline
+7  &   Cap Texture    &   Viscid, Sticky, Slimy or Slick  \\\hline
+8  &   Cap Texture    &   Wrinkled, Pitted or Corrugated  \\\hline
+9  &   Cap Texture    &   Cracked Beyond Environmental Effects  \\\hline
+10  &   Cap Texture    &  Spiky or Scaly  \\\hline
+11  &   Pore Color    &  White, Buff, or Light Gray  \\\hline
+12  &   Pore Color    &   Yellow to Gold  \\\hline
+13  &   Pore Color    &   Red, Pink, Purple or Orange  \\\hline
+14  &   Pore Color    &   Some Shade of Brown  \\\hline
+15  &   Pore Color    &   Black, Dark Brown, or Dark Gray  \\\hline
+16  &   Pore Staining    &  Pores Do Not Stain within 30 seconds  \\\hline
+17  &   Pore Staining    &  Pores Stain Blue  \\\hline
+18  &   Pore Staining    &  Pores Stain Other than Blue  \\\hline
+19  &   Stem Color    &  White, Buff, or Light Gray  \\\hline
+20  &   Stem Color    &  Yellow to Orange  \\\hline
+21  &   Stem Color    &  Red, Pink, Purple, or Orange  \\\hline
+22  &   Stem Color    &  Some Shade of Brown  \\\hline
+23  &   Stem Color    &  Black, Dark Brown, or Dark Gray  \\\hline
+24  &   Stem Decoration  &  Has No Significant Ornaments  \\\hline
+25  &   Stem Decoration  &  Has No Significant Ornaments  \\\hline
+26  &   Stem Decoration  &  Viscid, Sticky, Slimy or Slick  \\\hline
+27  &   Stem Decoration  &  Has a Ring (Annulus)  \\\hline
+28  &   Stem Decoration  &  Has Ridges  \\\hline
+29  &   Stem Decoration  &  Netted (Reticulated)  RED  \\\hline
+30  &   Stem Decoration  &  Netted (Reticulated)  WHITE  \\\hline
+31  &   Stem Decoration  &  Netted (Reticulated)  \\\hline
+32  &   Stem Decoration  &  Has Scabers/Scales  \\\hline
+33  &   Stem Decoration  &  Notably Dotted and/or Spotted  \\\hline
+34  &   Cap Flesh Color    &  White  \\\hline
+35  &   Cap Flesh Color    &  Yellow  \\\hline
+36  &   Cap Flesh Staining    &  Does Not Stain within 30 seconds  \\\hline
+37  &   Cap Flesh Staining    &  Stains Blue  \\\hline
+38  &   Cap Flesh Staining    &  Stains a Color Other than Blue  \\\hline
+\end{tabular}
+\end{table}
