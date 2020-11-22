@@ -62,41 +62,6 @@ def species_from_feats(feats, p):
     return idxs
 
 
-# # example
-# spec_id = 38
-# p = 0.9
-# idxs = lookalikes(spec_id, p)
-# print(get_name(spec_id))
-# print([(idx, get_name(idx + 1)) for idx in idxs])
-
-# f = get_feats(spec_id)
-# idxs = species_from_feats(f, p)
-# print([(idx, get_name(idx + 1)) for idx in idxs])
-
-
-## Iterative version
-
-
-# def lookalikes_i(species_id, p):
-#     species = get_feats(species_id)
-#     sims = defaultdict(int)
-#     for spec_id in labels["ID"]:
-#         if spec_id is not species_id:
-#             other_species = get_feats(spec_id)
-#             sim = similarity(species, other_species)
-#             sims[spec_id] = sim
-#     result = [
-#         spec for (spec, sim) in sims.items() if sim >= p * similarity(species, species)
-#     ]
-#     return result
-
-
-# results = lookalikes_i(spec_id, p)
-# print()
-# print(spec_id, ", ", get_name(spec_id))
-# for result in results:
-#     print(get_name(result))
-
 pd.set_option("display.max_colwidth", 100)
 
 
@@ -125,5 +90,19 @@ def estimate_performance(u, p):
     for t in range(len(selected_ids)):
         perf = get_performance(u, t, p)
         # print(perf)
+        res[t] = perf
+    return res
+
+
+def get_performance_direct(ids, t, p):
+    size_of_tau_hat = len(lookalikes(ids[0], p))
+    tau_hat = ids[:size_of_tau_hat]
+    return performance(tau_hat, t)
+
+
+def estimate_performance_direct(ids, p):
+    res = np.zeros((len(selected_ids),))
+    for t in range(len(selected_ids)):
+        perf = get_performance_direct(ids, t, p)
         res[t] = perf
     return res
