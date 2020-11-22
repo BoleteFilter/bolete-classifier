@@ -3,9 +3,6 @@ from lookalikes import *
 import torch
 import numpy as np
 
-def shared(tau, tau_hat):
-    return len(np.intersect1d(tau, tau_hat))
-
 def compute_and_save_performance(name):
     scores, y_pred, y_true, y_labels = load_raw_eval_data(name)
 
