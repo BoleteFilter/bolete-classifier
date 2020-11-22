@@ -6,10 +6,6 @@ import numpy as np
 from deco import *
 
 
-def shared(tau, tau_hat):
-    return len(np.intersect1d(tau, tau_hat))
-
-
 @concurrent
 def get_performance_for_p(p, scores, y_pred, y_labels, model_type):
     p = p / 100
