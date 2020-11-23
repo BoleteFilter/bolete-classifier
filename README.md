@@ -19,6 +19,14 @@ This will:
 Now `clean_data/labels.csv` contains all the mushrooms and the mushroom identification features to predict. And the `data` folder contains photos for each mushroom by the newest name of the mushroom for data-augmentation purposes (add correct photos to these bins as needed).
 5. Process all image files in `data` by resizing and padding them so they are 512 x 512. Write these compressed versions to an HDF5 dataset file with their corresponding labels.
 
+## Building
+
+To build the Cython files execute
+
+```bash
+python setup.py build_ext --inplace
+```
+
 ## Acknowledgements
 
 Data generously provided by the [Western Pennsylvania Mushroom Club](https://wpamushroomclub.org/) via collaboration with Scott Pavelle and Richard Jacob.
