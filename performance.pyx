@@ -88,12 +88,12 @@ def edibility_performance(tau_hat, t):
 def random_char_performance(num_samples):
     name = "random_char"
 
-    ps = get_random_performance(num_samples, edibility=False)
-    ps = np.mean(ps, 2)
-    ps = np.mean(ps, 1)
-    save_performance_data(np.arange(0, 101) / 100, ps, name)
+    # ps = get_random_performance(num_samples, edibility=False)
+    # ps = np.mean(ps, 2)
+    # ps = np.mean(ps, 1)
+    # save_performance_data(np.arange(0, 101) / 100, ps, name)
 
-    print("species done")
+    # print("species done")
 
     ps_ed = get_random_performance(num_samples, edibility=True)
     ps_ed = np.mean(ps_ed, 1)

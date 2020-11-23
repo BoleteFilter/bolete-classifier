@@ -12,11 +12,9 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from data_utils import BoleteDataset, get_data_from_splits
 
 
-def get_loader(X, Y, batch_size, shuffle=True, transform=None):
-    dataset = BoleteDataset(X, Y, transform)
-    loader = torch.utils.data.DataLoader(
-        dataset, batch_size=batch_size, shuffle=shuffle
-    )
+def get_loader(X, Y, batch_size):
+    dataset = BoleteDataset(X, Y, None)
+    loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False)
     return loader
 
 
@@ -82,6 +80,7 @@ def train_model(
             if phase == "val" and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
+
             if phase == "val":
                 val_acc_history.append(float(epoch_acc))
                 val_loss_history.append(float(epoch_loss))
@@ -133,8 +132,8 @@ def cross_val(
             y_val_cv,
         ) = get_data_from_splits(X_train, Y_train, y_train, train_index, val_index)
 
-        train_loader = get_loader(X_train_cv, Y_train_cv, batch_size, transform)
-        val_loader = get_loader(X_val_cv, Y_val_cv, batch_size, transform)
+        train_loader = get_loader(X_train_cv, Y_train_cv, batch_size)
+        val_loader = get_loader(X_val_cv, Y_val_cv, batch_size)
         dataloaders = {"train": train_loader, "val": val_loader}
 
         print("CV Fold: ", fold)
@@ -173,7 +172,7 @@ def evaluate(
     print("Evaluating model on: ", device)
     model.to(device, dtype=dtype)
     model.eval()
-    loader = get_loader(X, Y, batch_size=1, transform=transform)
+    loader = get_loader(X, Y, batch_size=1)
 
     outputs = np.zeros((y.shape[0], out_dim))
 

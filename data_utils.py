@@ -116,10 +116,12 @@ def load_performance_data(p_value, perf, name, edibility=False):
     return True
 
 
-def save_history_data(history, name, edibility=False):
+def save_history_data(history, name, edibility=False, batch_size=2):
     folder = "history_data_ed/" if edibility else "history_data/"
-    for key in history.keys():
-        history[key] = np.mean(history[key], axis=0)
+
+    if batch_size != 1:
+        for key in history.keys():
+            history[key] = np.mean(history[key], axis=0)
 
     df = pd.DataFrame(history)
     df.to_csv(folder + name + "_history.csv")
