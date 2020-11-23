@@ -1,9 +1,15 @@
 from locale import getpreferredencoding
 from data_utils import *
-from lookalikes import *
-import torch
 import numpy as np
-from deco import *
+
+# cython
+from lookalikes import (
+    species_from_feats,
+    lookalikes,
+    get_edibility,
+    get_tau_edibility,
+    get_num_species,
+)
 
 #######################################################################################
 
@@ -21,7 +27,6 @@ def compute_and_save_performance(name):
     return True
 
 
-@synchronized
 def get_ps(scores, y_pred, y_labels, model_type):
     ps = np.zeros((101, len(y_labels)))
     ps_ed = np.zeros((101, len(y_labels)))
@@ -36,7 +41,6 @@ def get_ps(scores, y_pred, y_labels, model_type):
     return ps, ps_ed
 
 
-@concurrent
 def get_performance_for_p(p, i, scores, y_pred, y_labels, model_type, edibility=False):
     p = p / 100
     perf = 0
@@ -81,9 +85,8 @@ def edibility_performance(tau_hat, t):
 #######################################################################################
 
 
-def random_char_performance():
+def random_char_performance(num_samples):
     name = "random_char"
-    num_samples = 100
 
     ps = get_random_performance(num_samples, edibility=False)
     ps = np.mean(ps, 2)
@@ -102,7 +105,6 @@ def random_char_performance():
     return True
 
 
-@synchronized
 def get_random_performance(num_samples, edibility):
     C = 38
     results = np.zeros((101, num_samples, get_num_species()))
@@ -110,6 +112,7 @@ def get_random_performance(num_samples, edibility):
     U = np.random.randint(0, 2, (101, num_samples, C))
 
     for p in range(101):
+        print("=", end="")
         for s in range(num_samples):
             u = U[p, s, :]  # characteristic
             for t in range(get_num_species()):  # target species
@@ -117,7 +120,6 @@ def get_random_performance(num_samples, edibility):
     return results
 
 
-@concurrent
 def get_performance(u, t, p, edibility):
     tau_hat = species_from_feats(u, p)
     # print(u)
@@ -142,9 +144,8 @@ def get_performance(u, t, p, edibility):
 #######################################################################################
 
 
-def random_direct_performance():
+def random_direct_performance(num_samples):
     name = "random_direct"
-    num_samples = 5
 
     # ps = get_random_direct_performance(num_samples, edibility=False)
     # ps = np.mean(ps, 2)
@@ -163,7 +164,6 @@ def random_direct_performance():
     return True
 
 
-@synchronized
 def get_random_direct_performance(num_samples, edibility):
     M = get_num_species()
     results = np.zeros((101, num_samples, M))
@@ -175,19 +175,18 @@ def get_random_direct_performance(num_samples, edibility):
             I[row][col] = get_permuted_species_list(M)
 
     for p in range(101):
+        print("=", end="")
         for s in range(num_samples):
-            ids = I[p][i]  # characteristic
+            ids = I[p][s]  # characteristic
             for t in range(M):  # target species
                 results[p, s, t] = get_direct_performance(ids, t, p / 100, edibility)
     return results
 
 
-@concurrent
 def get_permuted_species_list(M):
     return np.random.permutation(np.arange(M))
 
 
-@concurrent
 def get_direct_performance(ids, t, p, edibility):
     size_of_tau_hat = len(lookalikes(ids[0], p))
     tau_hat = ids[:size_of_tau_hat]
@@ -211,32 +210,3 @@ def get_direct_performance(ids, t, p, edibility):
 
 #######################################################################################
 
-
-def get_performance_direct(ids, t, p, edibility=False):
-    size_of_tau_hat = len(lookalikes(ids[0], p))
-    tau_hat = ids[:size_of_tau_hat]
-    if edibility:
-        edibility_performance(tau_hat, t)
-    else:
-        performance(tau_hat, t)
-
-
-def estimate_performance(u, p, edibility=False):
-    res = np.zeros((get_num_species(),))
-    for t in range(get_num_species()):
-        perf = get_performance(u, t, p, edibility)
-        # print(perf)
-        res[t] = perf
-    return res
-
-
-def estimate_performance_direct(ids, p, edibility=False):
-    res = np.zeros((get_num_species(),))
-    for t in range(get_num_species()):
-        perf = get_performance_direct(ids, t, p, edibility)
-        res[t] = perf
-    return res
-
-
-if __name__ == "__main__":
-    random_char_performance()

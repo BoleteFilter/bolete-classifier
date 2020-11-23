@@ -8,3 +8,8 @@ data_pipeline/new_photos
 data_pipeline/data*
 *.h5
 old_data
+
+# cython
+*.c
+*.cpython*
+*.o
