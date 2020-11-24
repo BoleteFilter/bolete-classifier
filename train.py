@@ -56,7 +56,7 @@ def train_model(
                 with torch.set_grad_enabled(phase == "train"):
                     scores = model(inputs)
 
-                    labels = labels.type_as(scores)  # comment this out for direct model
+                    # labels = labels.type_as(scores)  # comment this out for direct model
 
                     loss = loss_fn(scores, labels)
                     preds = pred_fn(scores)

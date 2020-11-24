@@ -22,12 +22,20 @@ from lookalikes import (
 def compute_and_save_performance(name):
     scores, y_pred, y_true, y_labels = load_raw_eval_data(name)
 
-    model_type = 0 if "characteristic" in name else 1 if "direct" in name else ""
+    model_type = 0 if "characteristic" in name else 1 if "direct" in name else 2
+    edibility = True if "_ed" in name else False
 
     ps, ps_ed = get_ps(scores, y_pred, y_labels, model_type)
 
-    save_performance_data(np.arange(0, 101) / 100, ps, name)
-    save_performance_data(np.arange(0, 101) / 100, ps_ed, name + "_ed")
+    if model_type == 1:
+        if edibility:
+            save_performance_data(np.arange(0, 101) / 100, ps_ed, name + "_ed")
+        else:
+            save_performance_data(np.arange(0, 101) / 100, ps, name)
+
+    else:
+        save_performance_data(np.arange(0, 101) / 100, ps, name)
+        save_performance_data(np.arange(0, 101) / 100, ps_ed, name + "_ed")
 
     return True
 
@@ -36,7 +44,7 @@ def get_ps(scores, y_pred, y_labels, model_type):
     ps = np.zeros((101, len(y_labels)))
     ps_ed = np.zeros((101, len(y_labels)))
     for p in range(101):
-        print(p / 100)
+        # print(p / 100)
         for i in range(len(y_labels)):
             ps[p, i] = get_performance_for_p(p, i, scores, y_pred, y_labels, model_type)
             ps_ed[p, i] = get_performance_for_p(
@@ -87,9 +95,11 @@ def edibility_performance(tau_hat, y_pred, t, model_type):
             np.argmax(np.bincount(tau_hat_ed)) if len(tau_hat_ed) > 0 else -1
         )
         return 1 if real_ed == pred_ed else 0
-    else:  ## direct edibility
-        print(y_pred, real_ed)
+    elif model_type == 1:  ## direct edibility
+        # print(y_pred, real_ed)
         return y_pred == real_ed
+    else:
+        return 0
 
 
 #######################################################################################
