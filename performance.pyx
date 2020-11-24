@@ -36,6 +36,7 @@ def get_ps(scores, y_pred, y_labels, model_type):
     ps = np.zeros((101, len(y_labels)))
     ps_ed = np.zeros((101, len(y_labels)))
     for p in range(101):
+        print(p / 100)
         for i in range(len(y_labels)):
             ps[p, i] = get_performance_for_p(p, i, scores, y_pred, y_labels, model_type)
             ps_ed[p, i] = get_performance_for_p(
@@ -80,14 +81,16 @@ def performance(tau_hat, t):
 
 def edibility_performance(tau_hat, y_pred, t, model_type):
     real_ed = get_edibility(t)
-    if model_type == 0: ## characteristic
+    if model_type == 0:  ## characteristic
         tau_hat_ed = get_tau_edibility(tau_hat)
         pred_ed = (  # mode predicted edibility
             np.argmax(np.bincount(tau_hat_ed)) if len(tau_hat_ed) > 0 else -1
         )
         return 1 if real_ed == pred_ed else 0
-    else: ## direct edibility
+    else:  ## direct edibility
+        print(y_pred, real_ed)
         return y_pred == real_ed
+
 
 #######################################################################################
 # Random Characteristic Performance
