@@ -67,7 +67,7 @@ def get_performance_for_p(p, i, scores, y_pred, y_labels, model_type, edibility=
     if not edibility:
         perf = performance(tau_hat, t)
     else:
-        perf = edibility_performance(tau_hat, t)
+        perf = edibility_performance(tau_hat, y_pred[i], t, model_type)
 
     return perf
 
@@ -78,14 +78,16 @@ def performance(tau_hat, t):
     return ((M - len(tau_hat)) * acc) / M
 
 
-def edibility_performance(tau_hat, t):
+def edibility_performance(tau_hat, y_pred, t, model_type):
     real_ed = get_edibility(t)
-    tau_hat_ed = get_tau_edibility(tau_hat)
-    pred_ed = (  # mode predicted edibility
-        np.argmax(np.bincount(tau_hat_ed)) if len(tau_hat_ed) > 0 else -1
-    )
-    return 1 if real_ed == pred_ed else 0
-
+    if model_type == 0: ## characteristic
+        tau_hat_ed = get_tau_edibility(tau_hat)
+        pred_ed = (  # mode predicted edibility
+            np.argmax(np.bincount(tau_hat_ed)) if len(tau_hat_ed) > 0 else -1
+        )
+        return 1 if real_ed == pred_ed else 0
+    else: ## direct edibility
+        return y_pred == real_ed
 
 #######################################################################################
 # Random Characteristic Performance
