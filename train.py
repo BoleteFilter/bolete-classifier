@@ -26,6 +26,7 @@ def train_model(
     pred_fn,
     num_epochs,
     show_every,
+    num_classes,
     device,
     dtype,
     phases=["train", "val"],
@@ -55,7 +56,7 @@ def train_model(
                 with torch.set_grad_enabled(phase == "train"):
                     scores = model(inputs)
 
-                    # labels = labels.type_as(scores)
+                    labels = labels.type_as(scores)  # comment this out for direct model
 
                     loss = loss_fn(scores, labels)
                     preds = pred_fn(scores)
@@ -65,7 +66,7 @@ def train_model(
                         optimizer.step()
 
                 running_loss += loss.item() * inputs.size(0)
-                running_corrects += torch.sum(preds == labels.data)
+                running_corrects += torch.sum(preds == labels.data) / num_classes
 
             epoch_loss = running_loss / len(dataloaders[phase].dataset)
             epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
@@ -103,7 +104,8 @@ def cross_val(
     batch_size,
     num_epochs,
     show_every,
-    folds=5,
+    num_classes,
+    folds,
     test_size=0.2,
     device=torch.device("cpu"),
     dtype=torch.float32,
@@ -147,6 +149,7 @@ def cross_val(
             pred_fn=pred_fn,
             num_epochs=num_epochs,
             show_every=show_every,
+            num_classes=num_classes,
             device=device,
             dtype=dtype,
         )

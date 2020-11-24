@@ -49,7 +49,7 @@ def get_data_from_splits(X, Y, y, train_index, test_index):
 def get_train_and_test(data, y_type):
     X, y = data["bolete-images"].T, data["bolete-labels"].T
     X = np.transpose(X, [0, 3, 1, 2])
-    sss = StratifiedShuffleSplit(n_splits=1, test_size=0.5, random_state=0)
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=0.3, random_state=0)
     sss.get_n_splits(X, y)
     for train_index, test_index in sss.split(X, y):
         X_train, X_test, Y_train, Y_test, y_train, y_test = get_data_from_splits(
@@ -116,14 +116,19 @@ def load_performance_data(p_value, perf, name, edibility=False):
     return True
 
 
-def save_history_data(history, name, edibility=False, batch_size=2):
+def save_history_data(history, name, edibility=False, num_folds=1):
+    # folder = "history_data_ed/" if edibility else "history_data/"
     folder = "history_data_ed/" if edibility else "history_data/"
 
-    if batch_size != 1:
-        for key in history.keys():
-            history[key] = np.mean(history[key], axis=0)
+    new_dictionary = {}
+    for key in history.keys():
+        # if num_folds != 1:
+        new_dictionary[key] = np.mean(history[key], axis=0)
+        # else:
+        # new_dictionary[key] = history[key]
 
-    df = pd.DataFrame(history)
+    df = pd.DataFrame(new_dictionary)
     df.to_csv(folder + name + "_history.csv")
+    print(folder + name + "_history.csv")
 
     return True

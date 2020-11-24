@@ -104,7 +104,7 @@ def random_char_performance(num_samples, type):
 
     if type == "edibility":
         ps_ed = get_random_performance(num_samples, edibility=True)
-        ps_ed = np.mean(ps_ed, 1)
+        ps_ed = np.mean(ps_ed, 2)
         ps_ed = np.mean(ps_ed, 1)
         save_performance_data(np.arange(0, 101) / 100, ps_ed, name + "_ed")
 
@@ -167,12 +167,11 @@ def random_direct_performance(num_samples, type):
         return True
 
     if type == "edibility":
-        ps_ed = get_random_direct_performance(num_samples, edibility=True)
-        ps_ed = np.mean(ps_ed, 1)
-        ps_ed = np.mean(ps_ed, 1)
-        save_performance_data(np.arange(0, 101) / 100, ps_ed, name + "_ed")
-
-        print("edibility done")
+        # ps_ed = get_random_direct_performance(num_samples, edibility=True)
+        # ps_ed = np.mean(ps_ed, 1)
+        # ps_ed = np.mean(ps_ed, 1)
+        # save_performance_data(np.arange(0, 101) / 100, ps_ed, name + "_ed")
+        # print("edibility done")
 
         return True
 
@@ -190,7 +189,7 @@ def get_random_direct_performance(num_samples, edibility):
     for p in range(101):
         print("=", end="")
         for s in range(num_samples):
-            ids = I[p][s]  # characteristic
+            ids = I[p][s]
             for t in range(M):  # target species
                 results[p, s, t] = get_direct_performance(ids, t, p / 100, edibility)
     return results

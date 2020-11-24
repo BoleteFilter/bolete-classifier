@@ -6,7 +6,6 @@ def drive(num_samples):
 
     print("Species")
     random_direct_performance(num_samples, "species")
-
     print("Edibility")
     random_direct_performance(num_samples, "edibility")
 
@@ -14,7 +13,6 @@ def drive(num_samples):
 
     print("Species")
     random_char_performance(num_samples, "species")
-
     print("Edibility")
     random_char_performance(num_samples, "edibility")
 
