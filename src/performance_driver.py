@@ -1,4 +1,4 @@
-from performance import random_direct_performance, random_char_performance
+from src.performance import random_direct_performance, random_char_performance
 
 
 def drive(num_samples):

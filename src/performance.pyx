@@ -1,11 +1,11 @@
 from locale import getpreferredencoding
 
 from numpy.lib.type_check import real
-from data_utils import *
+from src.data_utils import *
 import numpy as np
 
 # cython
-from lookalikes import (
+from src.lookalikes import (
     species_from_feats,
     lookalikes,
     get_edibility,

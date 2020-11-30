@@ -53,6 +53,17 @@ Options:
 * EDIBILITY = True if the direct model should output edibility scores, False for species scores
 * HIGH_RES = True to use 512x512 images, False to use 256x256 images.
 
+## Evaluating Results
+
+Running the cells in `performance.ipynb` will produce the performance data from the data in `evaluation_data/`. Output will be located in `performance_data/`
+
+To generate all the plots used in the paper, execute:
+
+```matlab
+>> paired_history_plots
+>> p_charts
+```
+
 ## Acknowledgements
 
 Data generously provided by the [Western Pennsylvania Mushroom Club](https://wpamushroomclub.org/) via collaboration with Scott Pavelle and Richard Jacob.

@@ -9,7 +9,7 @@ import copy
 
 from sklearn.model_selection import StratifiedShuffleSplit
 
-from data_utils import BoleteDataset, get_data_from_splits
+from src.data_utils import BoleteDataset, get_data_from_splits
 
 
 def get_loader(X, Y, batch_size):

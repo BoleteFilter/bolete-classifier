@@ -1,6 +1,4 @@
-from numpy.core.numeric import zeros_like
 import numpy as np
-from collections import defaultdict
 import pandas as pd
 
 features = np.loadtxt("./data_pipeline/clean_data/new_features.csv", delimiter=",")
